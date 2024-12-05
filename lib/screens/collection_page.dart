@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyCollectionPage extends StatelessWidget {
+  const MyCollectionPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,13 +39,15 @@ class MyCollectionPage extends StatelessWidget {
               child: ListView(
                 children: [
                   buildBookItem(
-                    image : 'assets/images/NameWind.jpg',
+                    key: const ValueKey('book1'),
+                    image: 'assets/images/NameWind.jpg',
                     title: 'The Midnight Library',
                     author: 'Matt Haig',
                     description: 'The story follows a woman named Nora Seed.',
                   ),
                   const SizedBox(height: 16),
                   buildBookItem(
+                    key: const ValueKey('book2'),
                     image: 'assets/images/Montainsechoed.jpg',
                     title: 'Find a sponsor',
                     author: 'Sylvia Ann Hewlett',
@@ -79,12 +83,14 @@ class MyCollectionPage extends StatelessWidget {
   }
 
   Widget buildBookItem({
+    required Key key,
     required String image,
     required String title,
     required String author,
     required String description,
   }) {
     return Row(
+      key: key,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "705481807816",
+    "project_id": "readify-app-9edbb",
+    "storage_bucket": "readify-app-9edbb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705481807816:android:6d7bf41cda3a03a75352fd",
+        "android_client_info": {
+          "package_name": "com.example.readify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhBjY7Wg4vEzIUwAzna-ASZ5kssRtc4RI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

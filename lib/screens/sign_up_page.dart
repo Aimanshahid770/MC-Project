@@ -1,4 +1,7 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:readify/screens/auth_service.dart';
 import 'login_page.dart'; // Import the LoginPage
 
 class SignUpPage extends StatefulWidget {
@@ -7,6 +10,17 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _auth = AuthService();
+
+//controllers
+final _name = TextEditingController();
+final _email =TextEditingController();
+final _password=  TextEditingController();
+
+
+
+
+
   final _formKey = GlobalKey<FormState>();
   bool agreeToTerms = false;
   bool accountCreated = false; // Track if account creation is successful
@@ -14,7 +28,14 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _confirmPasswordVisible = false; // Password visibility toggle for confirm password
 
   @override
-  Widget build(BuildContext context) {
+
+void dispose(){
+super.dispose();
+_name.dispose();
+_email.dispose();
+_password.dispose();
+} 
+ Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
@@ -53,7 +74,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 if (!accountCreated) ...[
                   // Full Name Field
-                  const TextField(
+                   TextField(
+                    controller: _name,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -69,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   // Email Address Field
                   TextFormField(
+                    controller: _email,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -93,6 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   // Password Field with Visibility Toggle
                   TextFormField(
+                    controller: _password,
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -164,7 +188,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         return 'Please confirm your password';
                       }
                       // Replace with your password field's value for matching
-                      if (value != "placeholderPassword") {
+                      if (value != _password.text) {
                         return 'Passwords do not match';
                       }
                       return null;
@@ -205,23 +229,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   // Sign-Up Button
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate() && agreeToTerms) {
-                          // Simulate account creation success and navigate to LoginPage
-                          setState(() {
-                            accountCreated = true;
-                          });
+                       onPressed: () {
+  if (_formKey.currentState!.validate() && agreeToTerms) {
+    _signup();
+  } else {
+    if (!agreeToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must agree to the Terms & Conditions')),
+      );
+    }
+  }
+},
 
-                          Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginPage(),
-                              ),
-                            );
-                          });
-                        }
-                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.symmetric(
@@ -247,4 +266,33 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
+  _signup() async {
+  try {
+    final user = await _auth.createUserWithEmailAndPassword(
+      _email.text,
+      _password.text,
+    );
+    if (user != null) {
+      print("User added successfully");
+      setState(() {
+        accountCreated = true;
+      });
+
+      // Navigate to LoginPage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    }
+  } catch (e) {
+    print("Error: $e");
+    // Show error to the user (optional)
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to create account: $e')),
+    );
+  }
+}
+
+   
 }

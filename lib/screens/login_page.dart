@@ -1,8 +1,14 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:readify/screens/auth_service.dart';
 import 'home_page.dart'; // Import your HomePage widget
 import 'sign_up_page.dart';
 
 class LoginPage extends StatelessWidget {
+  final _auth = AuthService();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     bool rememberMe = false; // Variable for "Remember Me" checkbox
@@ -18,7 +24,6 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Welcome Text
               const Text(
                 'Welcome to Readify!',
                 style: TextStyle(
@@ -30,13 +35,14 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 30),
               // Image
               Image.asset(
-                'assets/images/logo_image.png', // Replace with the correct image path
+                'assets/images/logo_image.png',
                 height: 170,
                 width: 170,
               ),
               const SizedBox(height: 30),
               // Email TextField
-              const TextField(
+              TextField(
+                controller: _email,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -50,7 +56,8 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               // Password TextField
-              const TextField(
+              TextField(
+                controller: _password,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -99,12 +106,8 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               // Sign-In Button
               ElevatedButton(
-                onPressed: () {
-                  // Navigate to HomePage when login is successful
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
+                onPressed: () async {
+                  await _login(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -149,7 +152,7 @@ class LoginPage extends StatelessWidget {
                   // Handle Google Sign-In logic here
                 },
                 icon: Image.asset(
-                  'assets/images/google_logo.png', // Use the correct path to your Google logo
+                  'assets/images/google_logo.png',
                   height: 20,
                   width: 20,
                 ),
@@ -171,5 +174,26 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _login(BuildContext context) async {
+    final user = await _auth.logInUserWithEmailAndPassword(
+      _email.text,
+      _password.text,
+    );
+
+    if (user != null) {
+      log("User Logged In");
+      // Navigate to HomePage if login is successful
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      // Show error message if login fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid credentials. Please try again.')),
+      );
+    }
   }
 }
