@@ -18,9 +18,7 @@ final _email =TextEditingController();
 final _password=  TextEditingController();
 
 
-
-
-
+// Dispose 
   final _formKey = GlobalKey<FormState>();
   bool agreeToTerms = false;
   bool accountCreated = false; // Track if account creation is successful
